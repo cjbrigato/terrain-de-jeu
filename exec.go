@@ -182,7 +182,7 @@ func (ex *executor) runCommand(w io.Writer, args ...string) bool {
 	if cmd.Env == nil {
 		cmd.Env = append([]string(nil), os.Environ()...)
 	}
-	cmd.Env = append(cmd.Env, "GO111MODULE=off")
+	//cmd.Env = append(cmd.Env, "GO111MODULE=off")
 	if err := cmd.Run(); err != nil {
 		ex.sendMsg(statusUpdate, fmt.Sprintf("Unexpected error: %v\n", err))
 		return false
@@ -348,6 +348,8 @@ func (ex *executor) handleRun(code string) {
 		} else {
 			ex.sendMsg(statusUpdate, "Compiling program...\n")
 		}
+		ex.runCommand(io.Discard, ex.gc, "mod", "init", "sandbox")
+		ex.runCommand(io.Discard, ex.gc, "mod", "tidy")
 		bb := new(bytes.Buffer)
 		if !ex.runCommand(bb, append([]string{gc}, buildArgs...)...) {
 			ex.reportBadLines(bb.Bytes())
@@ -379,6 +381,7 @@ func (ex *executor) handleRun(code string) {
 }
 
 // parseFile parses a Go source file and reports various properties:
+//
 //	hasMain: whether the file has a main function (as opposed to a test suite)
 //	gcs: versions of Go to use; nil if not specified
 //	buildArgs: custom build arguments; nil if not specified

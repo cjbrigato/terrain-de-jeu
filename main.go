@@ -142,9 +142,9 @@ func loadConfig(path string) (conf config, logger *log.Logger, closer func() err
 		if err != nil {
 			logger.Fatalf("unable to read password: %v", err)
 		}
-		if len(bytes.TrimSpace(p)) < 8 {
+		/*if len(bytes.TrimSpace(p)) < 8 {
 			logger.Fatal("error: insecure password")
-		}
+		}*/
 		s, err := ioutil.ReadAll(&io.LimitedReader{R: rand.Reader, N: 32})
 		if err != nil {
 			logger.Fatalf("unable to generate salt: %v", err)
